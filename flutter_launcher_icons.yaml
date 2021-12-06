@@ -1,0 +1,9 @@
+#! To launch the flutter launcher icons, run:
+#!
+#!    flutter pub run flutter_launcher_icons:main
+
+
+flutter_icons:
+  android: "launcher_icon"
+  ios: true
+  image_path: "assets/images/otk2.png"
