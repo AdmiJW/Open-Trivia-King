@@ -7,7 +7,10 @@ import 'package:flutter/material.dart';
 //?======================================
 class RoundedElevatedButton extends StatelessWidget {
 
+	// If child is not null, then use child. Otherwise use text
 	final String text;
+	final Widget? child;
+
 	final double fontSize, xPadding, yPadding, xMargin, yMargin, borderRadius;
 	final Color? primaryColor;
 	final void Function()? onPressed;
@@ -16,6 +19,7 @@ class RoundedElevatedButton extends StatelessWidget {
 	const RoundedElevatedButton({ 
 		Key? key,
 		this.text = "",
+		this.child,
 		this.fontSize = 10,
 		this.primaryColor = Colors.blue,
 		this.xPadding = 0,
@@ -33,7 +37,7 @@ class RoundedElevatedButton extends StatelessWidget {
 			padding: EdgeInsets.symmetric(vertical: yMargin, horizontal: xMargin),
 			child: ElevatedButton(
 				onPressed: onPressed,
-				child: Text(
+				child: child ?? Text(
 					text,
 					textAlign: TextAlign.center,
 				),

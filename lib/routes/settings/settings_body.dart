@@ -1,18 +1,22 @@
 import 'package:flutter/material.dart';
+import 'package:open_trivia_king/states/auth_state.dart';
 import 'package:provider/provider.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 
 import 'package:open_trivia_king/states/user_state.dart';
 import 'package:open_trivia_king/widgets/fade_in_with_delay.dart';
 import 'package:open_trivia_king/widgets/rounded_elevated_button.dart';
-
+import 'package:open_trivia_king/routes/settings/settings_signin.dart';
+import 'package:open_trivia_king/routes/settings/settings_googleuser.dart';
 
 
 class SettingsBody extends StatelessWidget {
 	const SettingsBody({ Key? key }) : super(key: key);
 
 
-	static const Widget title = FadeInWithDelay( 
+	//* Title
+	static const Widget _title = FadeInWithDelay( 
 		delay: 0, 
 		duration: 500,
 		child: Text(
@@ -26,29 +30,47 @@ class SettingsBody extends StatelessWidget {
 	);
 
 
+	//* Clear Local user data button
+	Widget _getClearLocalUserDataButton(context, userState)=> RoundedElevatedButton(
+		child: Row(
+				mainAxisAlignment: MainAxisAlignment.center,
+				children: const [
+					Text("Clear local user data  "),
+					Icon( Icons.delete_forever ),
+				],
+			),
+		onPressed: ()=> clearUserStateProcedure(context, userState),
+		fontSize: 20,
+		primaryColor: Colors.red,
+	);
+
+
 	@override
 	Widget build(BuildContext context) {
 		UserState userState = Provider.of<UserState>(context);
+		AuthState authState = Provider.of<AuthState>(context);
 
 		return ListView(
 			padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
 			children: [
-				title,
+				_title,
 				const SizedBox(height: 20,),
-				FadeInWithDelay(
-					delay: 500,
-					duration: 750,
-					child: RoundedElevatedButton(
-						text: "Clear user data",
-						onPressed: ()=> clearUserStateProcedure(context, userState),
-						fontSize: 20,
-						primaryColor: Colors.red,
-					),
-				)
+				authState.authState == AuthStateEnum.LOGGED_OUT
+					? const SettingsSignIn()
+					: const SettingsGoogleUser(),
+				const Divider(height: 20),
+				_getClearLocalUserDataButton(context, userState),
 			],
 		);
   	}
 
+
+
+
+
+	//? ==============================================
+	//? Settings Procedures
+	//? ============================================= 
 
 	void clearUserStateProcedure(BuildContext ctx, UserState userState) async {
 		bool? confirmDelete = await showDialog<bool>(

@@ -1,0 +1,117 @@
+import 'package:flutter/material.dart';
+import 'package:open_trivia_king/states/auth_state.dart';
+import 'package:provider/provider.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+
+
+import 'package:open_trivia_king/states/user_state.dart';
+import 'package:open_trivia_king/widgets/fade_in_with_delay.dart';
+import 'package:open_trivia_king/widgets/rounded_elevated_button.dart';
+
+
+
+class SettingsGoogleUser extends StatelessWidget {
+	const SettingsGoogleUser({ Key? key }) : super(key: key);
+
+
+
+	//* Simple Profile section
+	Widget _getProfile(AuthState authState)=> Row(
+		mainAxisAlignment: MainAxisAlignment.center,
+		children: [
+			CircleAvatar(
+				radius: 40,
+				child: Text( authState.displayName?[0] ?? "User" ),
+				foregroundImage: authState.profilePicUrl != null
+					? Image.network(authState.profilePicUrl!).image
+					: null,
+			),
+			const SizedBox(width: 20,),
+			Text(
+				authState.displayName ?? "Anonymous",
+				style: const TextStyle(fontSize: 25, fontWeight: FontWeight.bold)
+			)
+		],
+	);
+
+
+	//* Sync to cloud button
+	Widget _getSyncToCloudButton(AuthState authState, UserState userState)=> FadeInWithDelay(
+		delay: 0,
+		duration: 750,
+		child: RoundedElevatedButton(
+			child: Row(
+				mainAxisAlignment: MainAxisAlignment.center,
+				children: const [
+					Text("Sync to cloud  "),
+					Icon( Icons.upload ),
+				],
+			),
+			onPressed: () {},
+			fontSize: 20,
+			primaryColor: Colors.blue,
+			yMargin: 2,
+		),
+	);
+
+	
+	//* Restore from cloud button
+	Widget _getSyncFromCloudButton(AuthState authState, UserState userState)=> FadeInWithDelay(
+		delay: 250,
+		duration: 750,
+		child: RoundedElevatedButton(
+			child: Row(
+				mainAxisAlignment: MainAxisAlignment.center,
+				children: const [
+					Text("Sync to cloud  "),
+					Icon( Icons.download ),
+				],
+			),
+			onPressed: () {},
+			fontSize: 20,
+			primaryColor: Colors.blue,
+			yMargin: 2,
+		),
+	);
+
+
+	//* Sign out button
+	Widget _getSignOutButton(AuthState authState)=> FadeInWithDelay(
+		delay: 500,
+		duration: 750,
+		child: RoundedElevatedButton(
+			child: Row(
+				mainAxisAlignment: MainAxisAlignment.center,
+				children: const [
+					Text("Log out  "),
+					Icon( Icons.logout ),
+				],
+			),
+			onPressed: () async {
+				await authState.signOut();
+				Fluttertoast.showToast(msg: "Signed out successfully.",);
+			},
+			fontSize: 20,
+			primaryColor: Colors.blue,
+			yMargin: 2,
+		),
+	);
+
+
+	@override
+	Widget build(BuildContext context) {
+		AuthState authState = Provider.of<AuthState>(context);
+		UserState userState = Provider.of<UserState>(context);
+
+		return Column(
+			crossAxisAlignment: CrossAxisAlignment.stretch,
+			children: [
+				_getProfile(authState),
+				const SizedBox(height: 30),
+				_getSyncToCloudButton(authState, userState),
+				_getSyncFromCloudButton(authState, userState),
+				_getSignOutButton(authState),
+			],
+		);
+  	}
+}
