@@ -1,0 +1,54 @@
+{
+  "project_info": {
+    "project_number": "324129360218",
+    "project_id": "open-trivia-king",
+    "storage_bucket": "open-trivia-king.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:324129360218:android:d8cdd3b4f55eb51bb28b63",
+        "android_client_info": {
+          "package_name": "com.admijw.opentriviaking"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "324129360218-isdidnje4ag73l9l4gkjk1osjkerfln0.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.admijw.opentriviaking",
+            "certificate_hash": "a71cbace5eac5b80079e334e1397078a4bf5715e"
+          }
+        },
+        {
+          "client_id": "324129360218-tpn75so2j6c2s1oh8sdsgi0582s2kpoc.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDO78gdKLx_K6gAId2GZcoffhSgzmILAHA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "324129360218-tpn75so2j6c2s1oh8sdsgi0582s2kpoc.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "324129360218-arcdgsi4da53hss4s8ul0jjnpajsubt0.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.admijw.opentriviaking"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
