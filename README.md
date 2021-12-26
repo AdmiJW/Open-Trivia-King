@@ -2,11 +2,13 @@
 
 A mini flutter quiz application utilizing [Open Trivia DB](https://opentdb.com/)
 
-[__Google Play Link__](https://play.google.com/store/apps/details?id=com.admijw.opentriviaking)
+[__Google Play Link >>> __](https://play.google.com/store/apps/details?id=com.admijw.opentriviaking)
 
 ![Demo of application 1](/assets/promo/Demo1.gif)
 
 ![Demo of application 2](/assets/promo/Demo2.gif)
+
+![Demo of application 3](/assets/promo/Demo3.jpg)
 
 ---
 
@@ -27,4 +29,4 @@ A mini flutter quiz application utilizing [Open Trivia DB](https://opentdb.com/)
 # Remarks:
 
 * Check out the tutorial for releasing flutter on play store [__HERE__](https://www.youtube.com/watch?v=g0GNuoCOtaQ). (Note you do need to pay a one-time payment of ~USD25 == MYR100).
-* The ost for this application is created by myself at [Youtube](https://www.youtube.com/watch?v=9L3LzfK4jjk)
+* The OST for this application is created by myself, watch at [Youtube](https://www.youtube.com/watch?v=9L3LzfK4jjk)

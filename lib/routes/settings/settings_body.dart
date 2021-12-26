@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:open_trivia_king/states/auth_state.dart';
 import 'package:provider/provider.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 
 
 import 'package:open_trivia_king/states/user_state.dart';

@@ -7,7 +7,6 @@ import 'package:open_trivia_king/routes/game/game_screen.dart';
 import 'package:open_trivia_king/routes/settings/settings_screen.dart';
 
 
-// TODO: Implement a Setting page (Clear data etc).
 final Map<String, WidgetBuilder> routes = {
 	'/': (BuildContext ctx)=> const HomeScreen(),
 	'/profile': (BuildContext ctx)=> const ProfileScreen(),

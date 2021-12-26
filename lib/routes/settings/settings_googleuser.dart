@@ -7,7 +7,10 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:open_trivia_king/states/user_state.dart';
 import 'package:open_trivia_king/widgets/fade_in_with_delay.dart';
 import 'package:open_trivia_king/widgets/rounded_elevated_button.dart';
+import 'package:open_trivia_king/services/firebase_operations.dart';
 
+
+//? The section shown when the user is logged in
 
 
 class SettingsGoogleUser extends StatelessWidget {
@@ -47,7 +50,11 @@ class SettingsGoogleUser extends StatelessWidget {
 					Icon( Icons.upload ),
 				],
 			),
-			onPressed: () {},
+			onPressed: () async {
+				Fluttertoast.showToast(msg: "Saving... Please wait",);
+				await saveProfilePicToStorage(authState, userState);
+				await saveUserStateToFirestore(authState, userState);
+			},
 			fontSize: 20,
 			primaryColor: Colors.blue,
 			yMargin: 2,
@@ -55,19 +62,41 @@ class SettingsGoogleUser extends StatelessWidget {
 	);
 
 	
-	//* Restore from cloud button
-	Widget _getSyncFromCloudButton(AuthState authState, UserState userState)=> FadeInWithDelay(
+	//* Sync with cloud button
+	Widget _getSyncFromCloudButton(BuildContext ctx, AuthState authState, UserState userState)=> FadeInWithDelay(
 		delay: 250,
 		duration: 750,
 		child: RoundedElevatedButton(
 			child: Row(
 				mainAxisAlignment: MainAxisAlignment.center,
 				children: const [
-					Text("Sync to cloud  "),
+					Text("Sync with cloud  "),
 					Icon( Icons.download ),
 				],
 			),
-			onPressed: () {},
+			onPressed: () async {
+				bool? confirmDelete = await showDialog<bool>(
+					context: ctx,
+					builder: (context)=> AlertDialog(
+						title: const Text("Sync with cloud?"),
+						content: const Text("Your local game data will be overwritten"),
+						actions: [
+							TextButton(
+								onPressed: () => Navigator.pop(context, false),
+								child: const Text('Cancel'),
+							),
+							TextButton(
+								onPressed: () => Navigator.pop(context, true),
+								child: const Text('OK'),
+							),
+						],
+					)
+				);
+				
+				if (confirmDelete == null || !confirmDelete) return;
+				await loadUserStateFromFirestore(authState, userState);
+				await loadProfilePicFromStorage(authState, userState);
+			},
 			fontSize: 20,
 			primaryColor: Colors.blue,
 			yMargin: 2,
@@ -109,7 +138,7 @@ class SettingsGoogleUser extends StatelessWidget {
 				_getProfile(authState),
 				const SizedBox(height: 30),
 				_getSyncToCloudButton(authState, userState),
-				_getSyncFromCloudButton(authState, userState),
+				_getSyncFromCloudButton(context, authState, userState),
 				_getSignOutButton(authState),
 			],
 		);

@@ -13,9 +13,14 @@ enum AuthStateEnum {
 
 class AuthState extends ChangeNotifier {
 	AuthStateEnum authState = AuthStateEnum.LOGGED_OUT;
+	String? uid;
 	String? displayName;
 	String? email;
 	String? profilePicUrl;
+
+	String? googleStorageProfilePicPath;
+
+
 
 
 	AuthState() {
@@ -24,12 +29,13 @@ class AuthState extends ChangeNotifier {
 		.listen((User? user) {
 			if (user == null) {
 				authState = AuthStateEnum.LOGGED_OUT;
-				displayName = email = profilePicUrl = null;
+				displayName = email = profilePicUrl = uid = null;
 			} else {
 				authState = AuthStateEnum.LOGGED_IN;
 				displayName = user.displayName ?? user.providerData[0].displayName;
 				email = user.email ?? user.providerData[0].email;
 				profilePicUrl = user.photoURL ?? user.providerData[0].photoURL;
+				uid = user.uid;
 			}
 
 			notifyListeners();

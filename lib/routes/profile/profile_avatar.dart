@@ -16,7 +16,7 @@ class ProfileAvatar extends StatelessWidget {
 	@override
 	Widget build(BuildContext context) {
 		UserState userState = Provider.of<UserState>(context, listen: true);
-		
+
 		return Center(
 			child: Stack(
 				children: [
@@ -29,7 +29,7 @@ class ProfileAvatar extends StatelessWidget {
 								fit: BoxFit.cover,
 							).image:
 							Image.file(
-								userState.profilePic!,
+								userState.profilePic!
 							).image
 						),
 					),
@@ -74,8 +74,6 @@ class ProfileAvatar extends StatelessWidget {
 		String path = (await getApplicationDocumentsDirectory()).path;
 		
 		File savedImage = await croppedPhoto.copy('$path/profilepic_${croppedPhoto.hashCode}.png');
-		// If contains previously saved photo, delete that first before putting new photo to prevent storage wastage
-		await userState.profilePic?.delete();
 		userState.setProfilePic( savedImage );
 	}
 }

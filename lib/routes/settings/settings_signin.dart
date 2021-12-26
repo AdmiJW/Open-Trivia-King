@@ -7,6 +7,9 @@ import 'package:open_trivia_king/widgets/fade_in_with_delay.dart';
 import 'package:open_trivia_king/widgets/rounded_elevated_button.dart';
 
 
+//? The section shown when the user haven't signed in
+
+
 
 class SettingsSignIn extends StatelessWidget {
 	const SettingsSignIn({ Key? key }) : super(key: key);

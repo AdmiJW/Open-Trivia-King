@@ -18,6 +18,7 @@ import 'package:open_trivia_king/states/auth_state.dart';
 import 'package:open_trivia_king/routes/routes.dart';
 
 
+
 void main() async {
 	WidgetsFlutterBinding.ensureInitialized();
 	await Hive.initFlutter();

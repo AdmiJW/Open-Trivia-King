@@ -134,11 +134,46 @@ class UserState extends ChangeNotifier {
 	}
 
 
+	void setUserState({
+		String? username,
+		File? profilePic,
+		int? totalQuestionsAnswered,
+		int? totalQuestionsAnsweredCorrectly,
+		int? highestStreak,
+		Map<String, int>? categoriesAnswered,
+		Map<String, int>? categoriesAnsweredCorrectly,
+	}) async {
+		this.username = username ?? this.username;
+		this.totalQuestionsAnswered = totalQuestionsAnswered ?? this.totalQuestionsAnswered;
+		this.totalQuestionsAnsweredCorrectly = totalQuestionsAnsweredCorrectly ?? this.totalQuestionsAnsweredCorrectly;
+		this.highestStreak = highestStreak ?? this.highestStreak;
+		this.categoriesAnswered = categoriesAnswered ?? this.categoriesAnswered;
+		this.categoriesAnsweredCorrectly = categoriesAnsweredCorrectly ?? this.categoriesAnsweredCorrectly;
+
+		if (profilePic != null) {
+			setProfilePic(profilePic);
+		}
+
+		await _saveUserStateIntoPersistentStorage();
+		notifyListeners();
+	}
+
+
 	void setProfilePic(File image) async {
 		if (!image.existsSync()) {
 			throw ArgumentError("Invalid non-existent profile picture provided at ${image.path}");
 		}
+
+		// Delete the old profile pic before setting to a new profile picture
+		if (profilePic != null && profilePic!.existsSync() && profilePic!.path != image.path) {
+			profilePic!.deleteSync();
+		}
+
 		profilePic = image;
+		
+		//! These is required to ensure any caches of previous images are cleared.
+		imageCache!.clear();
+		imageCache!.clearLiveImages();
 
 		await _saveUserStateIntoPersistentStorage(saveUsername: false, saveGameData: false);
 		notifyListeners();
