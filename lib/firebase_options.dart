@@ -61,7 +61,8 @@ class DefaultFirebaseOptions {
     messagingSenderId: '324129360218',
     projectId: 'open-trivia-king',
     storageBucket: 'open-trivia-king.appspot.com',
-    iosClientId: '324129360218-arcdgsi4da53hss4s8ul0jjnpajsubt0.apps.googleusercontent.com',
+    iosClientId:
+        '324129360218-arcdgsi4da53hss4s8ul0jjnpajsubt0.apps.googleusercontent.com',
     iosBundleId: 'com.admijw.opentriviaking',
   );
 }
