@@ -21,6 +21,9 @@ class SlidingListTileWithDelay extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SlideInWithDelay(
+      delay: delay,
+      duration: duration,
+      initialOffset: initialOffset,
       child: Padding(
         padding: EdgeInsets.symmetric(vertical: verticalPadding),
         child: Row(
@@ -46,9 +49,6 @@ class SlidingListTileWithDelay extends StatelessWidget {
           ],
         ),
       ),
-      delay: delay,
-      duration: duration,
-      initialOffset: initialOffset,
     );
   }
 }

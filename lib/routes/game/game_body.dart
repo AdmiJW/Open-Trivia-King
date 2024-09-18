@@ -18,16 +18,16 @@ class GameBody extends StatelessWidget {
         selector: (ctx, gameState) => gameState.state,
         builder: (ctx, state, child) {
           switch (state) {
-            case GameStates.LOADING:
+            case GameStates.loading:
               return const GameLoading();
-            case GameStates.SPLASH_SCREEN:
+            case GameStates.splashScreen:
               return const GameSplashScreen();
-            case GameStates.ANSWERING:
-            case GameStates.ANSWER_REVEAL:
+            case GameStates.answering:
+            case GameStates.answerReveal:
               return const GameQuestion();
-            case GameStates.GAME_OVER:
+            case GameStates.gameOver:
               return const GameGameOver();
-            case GameStates.ERROR:
+            case GameStates.error:
               return const GameError();
             default:
               return const Center(

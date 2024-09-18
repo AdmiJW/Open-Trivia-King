@@ -6,48 +6,47 @@ import 'package:open_trivia_king/widgets/sliding_list_tile_with_delay.dart';
 
 class ProfileStats extends StatelessWidget {
   static const int baseDelay = 600;
+  static const int delayIncrement = 50;
 
   const ProfileStats({Key? key}) : super(key: key);
+
+  Widget getListTile(String title, Object trailing, int index) {
+    return SlidingListTileWithDelay(
+      title: title,
+      trailing: trailing.toString(),
+      delay: baseDelay + (delayIncrement * index),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
     UserState userState = Provider.of<UserState>(context, listen: false);
-    int iterateIndex = 0;
+    int totalQuestionsAnswered = userState.totalQuestionsAnswered;
+    int totalQuestionsAnsweredCorrectly =
+        userState.totalQuestionsAnsweredCorrectly;
+    int highestStreak = userState.highestStreak;
+    String mostAnsweredCategory = userState.getMostAnsweredCategory();
+    String mostProficientCategory = userState.getMostProficientCategory();
+    Map<String, int> categoriesAnswered = userState.categoriesAnswered;
+    Map<String, int> categoriesAnsweredCorrectly =
+        userState.categoriesAnsweredCorrectly;
+    int iterationIndex = 0;
 
     return Column(
       children: [
-        SlidingListTileWithDelay(
-          title: "Total Answered",
-          trailing: userState.totalQuestionsAnswered.toString(),
-          delay: baseDelay,
-        ),
-        SlidingListTileWithDelay(
-          title: "Total Corrects",
-          trailing: userState.totalQuestionsAnsweredCorrectly.toString(),
-          delay: baseDelay + 200,
-        ),
-        SlidingListTileWithDelay(
-          title: "Highest Streak",
-          trailing: userState.highestStreak.toString(),
-          delay: baseDelay + 400,
-        ),
+        getListTile("Total Answered", totalQuestionsAnswered, 0),
+        getListTile("Total Corrects", totalQuestionsAnsweredCorrectly, 1),
+        getListTile("Highest Streak", highestStreak, 2),
         const Divider(height: 20),
-        SlidingListTileWithDelay(
-          title: "Most Answered Category",
-          trailing: userState.getMostAnsweredCategory(),
-          delay: baseDelay + 600,
-        ),
-        SlidingListTileWithDelay(
-            title: "Most Proficient Category",
-            trailing: userState.getMostProficientCategory(),
-            delay: baseDelay + 800),
+        getListTile("Most Answered Category", mostAnsweredCategory, 3),
+        getListTile("Most Proficient Category", mostProficientCategory, 4),
         const Divider(height: 20),
         for (String category in userState.categoriesAnswered.keys)
-          SlidingListTileWithDelay(
-            title: category,
-            trailing: "${userState.categoriesAnsweredCorrectly[category]}/"
-                "${userState.categoriesAnswered[category]}",
-            delay: baseDelay + 1000 + (100 * iterateIndex++),
+          getListTile(
+            category,
+            "${categoriesAnsweredCorrectly[category]}/"
+            "${categoriesAnswered[category]}",
+            5 + (iterationIndex++),
           ),
       ],
     );

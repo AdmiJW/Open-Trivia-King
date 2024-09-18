@@ -53,7 +53,7 @@ class SettingsGoogleUser extends StatelessWidget {
             await saveUserStateToFirestore(authState, userState);
           },
           fontSize: 20,
-          primaryColor: Colors.blue,
+          backgroundColor: Colors.blue,
           yMargin: 2,
         ),
       );
@@ -96,7 +96,7 @@ class SettingsGoogleUser extends StatelessWidget {
             await loadProfilePicFromStorage(authState, userState);
           },
           fontSize: 20,
-          primaryColor: Colors.blue,
+          backgroundColor: Colors.blue,
           yMargin: 2,
         ),
       );
@@ -120,7 +120,7 @@ class SettingsGoogleUser extends StatelessWidget {
             );
           },
           fontSize: 20,
-          primaryColor: Colors.blue,
+          backgroundColor: Colors.blue,
           yMargin: 2,
         ),
       );

@@ -42,7 +42,7 @@ class SettingsSignIn extends StatelessWidget {
             }
           },
           fontSize: 20,
-          primaryColor: Colors.blue,
+          backgroundColor: Colors.blue,
           yMargin: 2,
         ),
       );

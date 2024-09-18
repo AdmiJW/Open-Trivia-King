@@ -35,7 +35,7 @@ class SettingsBody extends StatelessWidget {
         ),
         onPressed: () => clearUserStateProcedure(context, userState),
         fontSize: 20,
-        primaryColor: Colors.red,
+        backgroundColor: Colors.red,
       );
 
   @override
@@ -50,7 +50,7 @@ class SettingsBody extends StatelessWidget {
         const SizedBox(
           height: 20,
         ),
-        authState.authState == AuthStateEnum.LOGGED_OUT
+        authState.authState == AuthStateEnum.loggedOut
             ? const SettingsSignIn()
             : const SettingsGoogleUser(),
         const Divider(height: 20),

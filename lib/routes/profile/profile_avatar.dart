@@ -32,11 +32,11 @@ class ProfileAvatar extends StatelessWidget {
             left: 0,
             child: FloatingActionButton(
               heroTag: 'New Profile pic via Camera',
+              onPressed: () => changeProfilePic(userState, ImageSource.camera),
+              mini: true,
               child: const Icon(
                 Icons.camera_alt,
               ),
-              onPressed: () => changeProfilePic(userState, ImageSource.camera),
-              mini: true,
             ),
           ),
           Positioned(
@@ -44,11 +44,11 @@ class ProfileAvatar extends StatelessWidget {
             right: 0,
             child: FloatingActionButton(
               heroTag: 'New Profile pic via Gallery',
+              onPressed: () => changeProfilePic(userState, ImageSource.gallery),
+              mini: true,
               child: const Icon(
                 Icons.photo,
               ),
-              onPressed: () => changeProfilePic(userState, ImageSource.gallery),
-              mini: true,
             ),
           ),
         ],

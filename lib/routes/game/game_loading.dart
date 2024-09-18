@@ -8,26 +8,31 @@ import 'package:open_trivia_king/widgets/fade_in_with_delay.dart';
 class GameLoading extends StatelessWidget {
   const GameLoading({Key? key}) : super(key: key);
 
+  Future<void> fetch(BuildContext ctx) async {
+    GameState gameState = Provider.of<GameState>(ctx, listen: false);
+    CategoryState categoryState =
+        Provider.of<CategoryState>(ctx, listen: false);
+
+    try {
+      await gameState
+          .fetchQuestionIntoState(categoryState.getRandomSelectedCategory());
+      gameState.progressState();
+    } catch (error) {
+      gameState.switchToErrorState(error.toString());
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    GameState gameState = Provider.of<GameState>(context, listen: false);
-    CategoryState categoryState =
-        Provider.of<CategoryState>(context, listen: false);
+    fetch(context);
 
-    // Upon entering this state, begin fetch the new trivia question
-    gameState
-        .fetchQuestionIntoState(categoryState.getRandomSelectedCategory())
-        .then((_) => gameState.progressState())
-        .onError((error, stackTrace) =>
-            gameState.switchToErrorState(error.toString()));
-
-    return FadeInWithDelay(
+    return const FadeInWithDelay(
       delay: 0,
       duration: 750,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
-        children: const [
+        children: [
           SizedBox(
               width: double.infinity), // Use to expand column to screen width
           CircularProgressIndicator(),

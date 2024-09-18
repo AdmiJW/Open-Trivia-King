@@ -10,7 +10,8 @@ class RoundedElevatedButton extends StatelessWidget {
   final Widget? child;
 
   final double fontSize, xPadding, yPadding, xMargin, yMargin, borderRadius;
-  final Color? primaryColor;
+  final Color? backgroundColor;
+  final Color? foregroundColor;
   final void Function()? onPressed;
 
   // Constructor
@@ -19,7 +20,8 @@ class RoundedElevatedButton extends StatelessWidget {
     this.text = "",
     this.child,
     this.fontSize = 10,
-    this.primaryColor = Colors.blue,
+    this.backgroundColor = Colors.blue,
+    this.foregroundColor = Colors.white,
     this.xPadding = 0,
     this.yPadding = 5,
     this.xMargin = 0,
@@ -34,22 +36,23 @@ class RoundedElevatedButton extends StatelessWidget {
       padding: EdgeInsets.symmetric(vertical: yMargin, horizontal: xMargin),
       child: ElevatedButton(
         onPressed: onPressed,
-        child: child ??
-            Text(
-              text,
-              textAlign: TextAlign.center,
-            ),
         style: ElevatedButton.styleFrom(
           textStyle: TextStyle(
             fontSize: fontSize,
             fontFamily: 'Sansation',
           ),
-          primary: primaryColor,
+          backgroundColor: backgroundColor,
+          foregroundColor: foregroundColor,
           padding:
               EdgeInsets.symmetric(horizontal: xPadding, vertical: yPadding),
           shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.all(Radius.circular(borderRadius))),
         ),
+        child: child ??
+            Text(
+              text,
+              textAlign: TextAlign.center,
+            ),
       ),
     );
   }

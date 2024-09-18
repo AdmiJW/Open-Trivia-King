@@ -20,7 +20,7 @@ class SlideInWithDelay extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  _SlideInWithDelayState createState() => _SlideInWithDelayState();
+  State<SlideInWithDelay> createState() => _SlideInWithDelayState();
 }
 
 class _SlideInWithDelayState extends State<SlideInWithDelay> {

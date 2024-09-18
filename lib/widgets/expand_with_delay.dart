@@ -20,7 +20,7 @@ class ExpandWithDelay extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  _ExpandWithDelayState createState() => _ExpandWithDelayState();
+  State<ExpandWithDelay> createState() => _ExpandWithDelayState();
 }
 
 class _ExpandWithDelayState extends State<ExpandWithDelay> {

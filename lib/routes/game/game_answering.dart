@@ -17,7 +17,7 @@ class GameQuestion extends StatelessWidget {
     AudioController audioController = Provider.of<AudioController>(context);
 
     // If it is answer reveal state, then automatically proceed after 5 seconds.
-    if (gameState.state == GameStates.ANSWER_REVEAL) {
+    if (gameState.state == GameStates.answerReveal) {
       Future.delayed(
           const Duration(seconds: 5), () => gameState.progressState());
     }
@@ -134,7 +134,7 @@ class GameQuestion extends StatelessWidget {
                 text: choice,
                 fontSize: 20,
                 onPressed: () {
-                  if (gameState.state == GameStates.ANSWERING) {
+                  if (gameState.state == GameStates.answering) {
                     gameState.checkAnswerAndUpdateSessionData(
                         audioController, choice);
                     gameState.progressState();
@@ -142,7 +142,7 @@ class GameQuestion extends StatelessWidget {
                 },
                 yMargin: 5,
                 xPadding: 5,
-                primaryColor: (gameState.state == GameStates.ANSWERING
+                backgroundColor: (gameState.state == GameStates.answering
                     ? Colors.blue
                     : gameState.currTrivia?.answer == choice
                         ? Colors.green

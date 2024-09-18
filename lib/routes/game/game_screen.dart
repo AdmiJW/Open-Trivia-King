@@ -16,8 +16,15 @@ import 'package:open_trivia_king/widgets/scaffold_with_asset_background.dart';
 //		(Scaffold)--------------------------------------------------------------
 //		/		   \			 \							\					\
 //	(Loading)	(Splash Screen)    (ANSWERING Screen)	(ANSWER REVEAL Screen) (Game Over Screen)
-class GameScreen extends StatelessWidget {
+class GameScreen extends StatefulWidget {
   const GameScreen({Key? key}) : super(key: key);
+
+  @override
+  State<GameScreen> createState() => _GameScreenState();
+}
+
+class _GameScreenState extends State<GameScreen> {
+  bool _confirmPop = false;
 
   @override
   Widget build(BuildContext context) {
@@ -32,8 +39,15 @@ class GameScreen extends StatelessWidget {
         ),
       ],
       // When the user wants to go back, ask for confirmation
-      builder: (context, child) => WillPopScope(
-        onWillPop: _getOnWillPopHandler(context),
+      builder: (context, child) => PopScope(
+        canPop: canPop(context),
+        onPopInvoked: (didPop) {
+          if (didPop) {
+            stopGame(context);
+          } else {
+            showQuitConfirmationDialog(context);
+          }
+        },
         child: ScaffoldWithAssetBackground(
           backgroundPath: "assets/images/wallpp.png",
           scaffold: Scaffold(
@@ -48,46 +62,50 @@ class GameScreen extends StatelessWidget {
     );
   }
 
-  //? Get the onWillPop Event handler for the WillPopScope.
-  //? When the quiz state is popped, update the user data with the GameSessionData in GameState
-  Future<bool> Function() _getOnWillPopHandler(BuildContext ctx) {
+  Future<void> showQuitConfirmationDialog(BuildContext ctx) async {
+    TextButton cancelButton = TextButton(
+      onPressed: () => Navigator.pop(ctx),
+      child: const Text("Cancel"),
+    );
+    TextButton exitButton = TextButton(
+      onPressed: () {
+        Navigator.pop(ctx);
+        _confirmPop = true;
+        Navigator.pop(ctx);
+      },
+      child: const Text("Exit to Home"),
+    );
+
+    await showDialog<void>(
+        context: ctx,
+        builder: (ctx) => AlertDialog(
+              title: const Text("Quit Quiz?"),
+              content: const Text("Your game data will be recorded"),
+              actions: [
+                cancelButton,
+                exitButton,
+              ],
+            ));
+  }
+
+  // Getter to get canPop boolean
+  bool canPop(BuildContext ctx) {
     GameState gameState = Provider.of<GameState>(ctx, listen: false);
+
+    bool isGameOver = gameState.state == GameStates.gameOver;
+    bool isError = gameState.state == GameStates.error;
+
+    return isGameOver || isError || _confirmPop;
+  }
+
+  void stopGame(BuildContext ctx) {
     UserState userState = Provider.of<UserState>(ctx, listen: false);
+    GameState gameState = Provider.of<GameState>(ctx, listen: false);
     AudioController audioController =
         Provider.of<AudioController>(ctx, listen: false);
 
-    // If the state is not GameOver state, then we have to ask the user whether to return to homescreen or not.
-    return () async {
-      if (gameState.state == GameStates.GAME_OVER ||
-          gameState.state == GameStates.ERROR) {
-        userState.updateUserStateFromGameSessionData(gameState.sessionData);
-        audioController.bgm.pause();
-        audioController.bgm.seek(0);
-        return true;
-      }
-
-      return (await showDialog<bool>(
-          context: ctx,
-          builder: (ctx) => AlertDialog(
-                title: const Text("Quit Quiz?"),
-                content: const Text("Your game data will be recorded"),
-                actions: [
-                  TextButton(
-                    onPressed: () => Navigator.pop(ctx, false),
-                    child: const Text("Cancel"),
-                  ),
-                  TextButton(
-                    onPressed: () {
-                      audioController.bgm.pause();
-                      audioController.bgm.seek(0);
-                      userState.updateUserStateFromGameSessionData(
-                          gameState.sessionData);
-                      Navigator.pop(ctx, true);
-                    },
-                    child: const Text("Exit to Home"),
-                  ),
-                ],
-              )))!;
-    };
+    userState.updateUserStateFromGameSessionData(gameState.sessionData);
+    audioController.bgm.pause();
+    audioController.bgm.seek(0);
   }
 }

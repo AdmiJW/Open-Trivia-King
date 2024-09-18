@@ -18,19 +18,30 @@ class FadeInWithDelay extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  _FadeInWithDelayState createState() => _FadeInWithDelayState();
+  State<FadeInWithDelay> createState() => _FadeInWithDelayState();
 }
 
 class _FadeInWithDelayState extends State<FadeInWithDelay> {
   double _opacity = 0;
+  Timer? _timer;
 
   @override
   void initState() {
     super.initState();
 
-    Future.delayed(Duration(milliseconds: widget.delay), () {
-      setState(() => _opacity = 1);
+    setState(() {
+      _opacity = 0;
+      _timer = Timer(
+        Duration(milliseconds: widget.delay),
+        () => setState(() => _opacity = 1),
+      );
     });
+  }
+
+  @override
+  void deactivate() {
+    super.deactivate();
+    _timer?.cancel();
   }
 
   @override
