@@ -8,7 +8,7 @@ class ProfileStats extends StatelessWidget {
   static const int baseDelay = 600;
   static const int delayIncrement = 50;
 
-  const ProfileStats({Key? key}) : super(key: key);
+  const ProfileStats({super.key});
 
   Widget getListTile(String title, Object trailing, int index) {
     return SlidingListTileWithDelay(

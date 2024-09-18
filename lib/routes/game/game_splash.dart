@@ -6,7 +6,7 @@ import 'package:open_trivia_king/widgets/expand_with_delay.dart';
 import 'package:open_trivia_king/widgets/fade_in_with_delay.dart';
 
 class GameSplashScreen extends StatelessWidget {
-  const GameSplashScreen({Key? key}) : super(key: key);
+  const GameSplashScreen({super.key});
 
   @override
   Widget build(BuildContext context) {

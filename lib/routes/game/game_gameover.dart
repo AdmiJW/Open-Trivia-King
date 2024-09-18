@@ -9,7 +9,7 @@ import 'package:open_trivia_king/widgets/sliding_list_tile_with_delay.dart';
 import 'package:open_trivia_king/widgets/rounded_elevated_button.dart';
 
 class GameGameOver extends StatelessWidget {
-  const GameGameOver({Key? key}) : super(key: key);
+  const GameGameOver({super.key});
 
   @override
   Widget build(BuildContext context) {

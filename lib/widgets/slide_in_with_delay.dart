@@ -11,13 +11,13 @@ class SlideInWithDelay extends StatefulWidget {
   final Curve curve;
 
   const SlideInWithDelay({
-    Key? key,
+    super.key,
     required this.child,
     required this.delay,
     required this.duration,
     required this.initialOffset,
     this.curve = Curves.easeOut,
-  }) : super(key: key);
+  });
 
   @override
   State<SlideInWithDelay> createState() => _SlideInWithDelayState();

@@ -8,7 +8,7 @@ import 'package:image_cropper/image_cropper.dart';
 import 'package:open_trivia_king/states/user_state.dart';
 
 class ProfileAvatar extends StatelessWidget {
-  const ProfileAvatar({Key? key}) : super(key: key);
+  const ProfileAvatar({super.key});
 
   @override
   Widget build(BuildContext context) {

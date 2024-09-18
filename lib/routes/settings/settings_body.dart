@@ -9,7 +9,7 @@ import 'package:open_trivia_king/routes/settings/settings_signin.dart';
 import 'package:open_trivia_king/routes/settings/settings_googleuser.dart';
 
 class SettingsBody extends StatelessWidget {
-  const SettingsBody({Key? key}) : super(key: key);
+  const SettingsBody({super.key});
 
   //* Title
   static const Widget _title = FadeInWithDelay(
@@ -26,16 +26,16 @@ class SettingsBody extends StatelessWidget {
   //* Clear Local user data button
   Widget _getClearLocalUserDataButton(context, userState) =>
       RoundedElevatedButton(
-        child: Row(
+        onPressed: () => clearUserStateProcedure(context, userState),
+        fontSize: 20,
+        backgroundColor: Colors.red,
+        child: const Row(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: const [
+          children: [
             Text("Clear local user data  "),
             Icon(Icons.delete_forever),
           ],
         ),
-        onPressed: () => clearUserStateProcedure(context, userState),
-        fontSize: 20,
-        backgroundColor: Colors.red,
       );
 
   @override

@@ -5,7 +5,7 @@ import 'package:open_trivia_king/states/game_state.dart';
 
 // Error screen.
 class GameError extends StatelessWidget {
-  const GameError({Key? key}) : super(key: key);
+  const GameError({super.key});
 
   @override
   Widget build(BuildContext context) {

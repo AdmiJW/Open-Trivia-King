@@ -6,7 +6,7 @@ import 'package:open_trivia_king/routes/profile/profile_username.dart';
 import 'package:open_trivia_king/routes/profile/profile_stats.dart';
 
 class ProfileBody extends StatelessWidget {
-  const ProfileBody({Key? key}) : super(key: key);
+  const ProfileBody({super.key});
 
   static const Widget title = FadeInWithDelay(
     delay: 0,

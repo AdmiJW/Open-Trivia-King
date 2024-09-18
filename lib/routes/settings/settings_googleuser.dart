@@ -11,7 +11,7 @@ import 'package:open_trivia_king/services/firebase_operations.dart';
 //? The section shown when the user is logged in
 
 class SettingsGoogleUser extends StatelessWidget {
-  const SettingsGoogleUser({Key? key}) : super(key: key);
+  const SettingsGoogleUser({super.key});
 
   //* Simple Profile section
   Widget _getProfile(AuthState authState) => Row(
@@ -19,10 +19,10 @@ class SettingsGoogleUser extends StatelessWidget {
         children: [
           CircleAvatar(
             radius: 40,
-            child: Text(authState.displayName?[0] ?? "User"),
             foregroundImage: authState.profilePicUrl != null
                 ? Image.network(authState.profilePicUrl!).image
                 : null,
+            child: Text(authState.displayName?[0] ?? "User"),
           ),
           const SizedBox(
             width: 20,
@@ -38,13 +38,6 @@ class SettingsGoogleUser extends StatelessWidget {
         delay: 0,
         duration: 750,
         child: RoundedElevatedButton(
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: const [
-              Text("Sync to cloud  "),
-              Icon(Icons.upload),
-            ],
-          ),
           onPressed: () async {
             Fluttertoast.showToast(
               msg: "Saving... Please wait",
@@ -55,6 +48,13 @@ class SettingsGoogleUser extends StatelessWidget {
           fontSize: 20,
           backgroundColor: Colors.blue,
           yMargin: 2,
+          child: const Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text("Sync to cloud  "),
+              Icon(Icons.upload),
+            ],
+          ),
         ),
       );
 
@@ -65,13 +65,6 @@ class SettingsGoogleUser extends StatelessWidget {
         delay: 250,
         duration: 750,
         child: RoundedElevatedButton(
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: const [
-              Text("Sync with cloud  "),
-              Icon(Icons.download),
-            ],
-          ),
           onPressed: () async {
             bool? confirmDelete = await showDialog<bool>(
                 context: ctx,
@@ -98,6 +91,13 @@ class SettingsGoogleUser extends StatelessWidget {
           fontSize: 20,
           backgroundColor: Colors.blue,
           yMargin: 2,
+          child: const Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text("Sync with cloud  "),
+              Icon(Icons.download),
+            ],
+          ),
         ),
       );
 
@@ -106,13 +106,6 @@ class SettingsGoogleUser extends StatelessWidget {
         delay: 500,
         duration: 750,
         child: RoundedElevatedButton(
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: const [
-              Text("Log out  "),
-              Icon(Icons.logout),
-            ],
-          ),
           onPressed: () async {
             await authState.signOut();
             Fluttertoast.showToast(
@@ -122,6 +115,13 @@ class SettingsGoogleUser extends StatelessWidget {
           fontSize: 20,
           backgroundColor: Colors.blue,
           yMargin: 2,
+          child: const Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text("Log out  "),
+              Icon(Icons.logout),
+            ],
+          ),
         ),
       );
 

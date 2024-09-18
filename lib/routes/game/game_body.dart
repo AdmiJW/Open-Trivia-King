@@ -10,7 +10,7 @@ import 'package:open_trivia_king/routes/game/game_gameover.dart';
 
 //? The gamebody which is dependent on the four states in GameState (game_state.dart)
 class GameBody extends StatelessWidget {
-  const GameBody({Key? key}) : super(key: key);
+  const GameBody({super.key});
 
   @override
   Widget build(BuildContext context) {

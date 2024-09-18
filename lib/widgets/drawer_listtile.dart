@@ -15,7 +15,7 @@ class DrawerListTile extends StatelessWidget {
   final Color? fontColor;
 
   const DrawerListTile({
-    Key? key,
+    super.key,
     this.xPadding = 0,
     this.yPadding = 0,
     this.leadingIcon,
@@ -25,7 +25,7 @@ class DrawerListTile extends StatelessWidget {
     this.fontSize = 25,
     this.fontWeight = FontWeight.w100,
     this.fontColor = Colors.black,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

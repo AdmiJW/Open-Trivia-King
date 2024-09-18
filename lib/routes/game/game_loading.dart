@@ -6,7 +6,7 @@ import 'package:open_trivia_king/states/game_state.dart';
 import 'package:open_trivia_king/widgets/fade_in_with_delay.dart';
 
 class GameLoading extends StatelessWidget {
-  const GameLoading({Key? key}) : super(key: key);
+  const GameLoading({super.key});
 
   Future<void> fetch(BuildContext ctx) async {
     GameState gameState = Provider.of<GameState>(ctx, listen: false);
@@ -24,7 +24,9 @@ class GameLoading extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    fetch(context);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      fetch(context);
+    });
 
     return const FadeInWithDelay(
       delay: 0,

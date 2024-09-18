@@ -16,7 +16,7 @@ class RoundedElevatedButton extends StatelessWidget {
 
   // Constructor
   const RoundedElevatedButton({
-    Key? key,
+    super.key,
     this.text = "",
     this.child,
     this.fontSize = 10,
@@ -28,7 +28,7 @@ class RoundedElevatedButton extends StatelessWidget {
     this.yMargin = 10,
     this.borderRadius = 5,
     this.onPressed,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

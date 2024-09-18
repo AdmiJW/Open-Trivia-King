@@ -8,7 +8,7 @@ import 'package:open_trivia_king/routes/home/home_categorylist.dart';
 /// The main body of the Home Screen
 /// Consist of title, buttons, and CategoryList
 class AppBody extends StatelessWidget {
-  const AppBody({Key? key}) : super(key: key);
+  const AppBody({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -74,20 +74,21 @@ class AppBody extends StatelessWidget {
   }
 
   void goToGameRoute(
-      BuildContext ctx, CategoryState categoryProvider, String gameMode) {
+      BuildContext ctx, CategoryState categoryProvider, String mode) {
     if (!categoryProvider.isAnyCategorySelected()) {
       ScaffoldMessenger.of(ctx).showSnackBar(
         const SnackBar(content: Text("Please select at least one category!")),
       );
     } else {
-      Navigator.of(ctx).pushNamed('/game', arguments: gameMode);
+      var url = mode == 'Normal' ? '/game-normal' : '/game-unlimited';
+      Navigator.of(ctx).pushNamed(url);
     }
   }
 }
 
 /// A row representing a button group consisting of "Select All" and "Clear All" button
 class _ClearSelectAllButtonGroup extends StatelessWidget {
-  const _ClearSelectAllButtonGroup({Key? key}) : super(key: key);
+  const _ClearSelectAllButtonGroup();
 
   @override
   Widget build(BuildContext context) {

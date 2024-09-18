@@ -11,13 +11,13 @@ class ExpandWithDelay extends StatefulWidget {
   final Curve curve;
 
   const ExpandWithDelay({
-    Key? key,
+    super.key,
     required this.child,
     required this.delay,
     required this.duration,
     this.initialScale = 0,
     this.curve = Curves.easeOut,
-  }) : super(key: key);
+  });
 
   @override
   State<ExpandWithDelay> createState() => _ExpandWithDelayState();

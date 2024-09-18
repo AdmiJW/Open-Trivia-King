@@ -5,10 +5,10 @@ class ScaffoldWithAssetBackground extends StatelessWidget {
   final Scaffold scaffold;
 
   const ScaffoldWithAssetBackground({
-    Key? key,
+    super.key,
     required this.scaffold,
     required this.backgroundPath,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

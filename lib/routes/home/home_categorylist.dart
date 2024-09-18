@@ -4,7 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:open_trivia_king/states/category_state.dart';
 
 class CategoryList extends StatelessWidget {
-  const CategoryList({Key? key}) : super(key: key);
+  const CategoryList({super.key});
 
   @override
   Widget build(BuildContext context) {

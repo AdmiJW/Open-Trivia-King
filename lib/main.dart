@@ -32,7 +32,7 @@ void main() async {
 //? Top level widget - MaterialApp wrapped in top level state Provider wrapped
 //?===============================================================================
 class OpenTriviaKing extends StatelessWidget {
-  const OpenTriviaKing({Key? key}) : super(key: key);
+  const OpenTriviaKing({super.key});
 
   @override
   Widget build(BuildContext context) {

@@ -10,12 +10,12 @@ class FadeInWithDelay extends StatefulWidget {
   final Curve curve;
 
   const FadeInWithDelay({
-    Key? key,
+    super.key,
     required this.child,
     required this.delay,
     required this.duration,
     this.curve = Curves.linear,
-  }) : super(key: key);
+  });
 
   @override
   State<FadeInWithDelay> createState() => _FadeInWithDelayState();
@@ -29,19 +29,16 @@ class _FadeInWithDelayState extends State<FadeInWithDelay> {
   void initState() {
     super.initState();
 
-    setState(() {
-      _opacity = 0;
-      _timer = Timer(
-        Duration(milliseconds: widget.delay),
-        () => setState(() => _opacity = 1),
-      );
+    _opacity = 0;
+    _timer = Timer(Duration(milliseconds: widget.delay), () {
+      setState(() => _opacity = 1);
     });
   }
 
   @override
   void deactivate() {
-    super.deactivate();
     _timer?.cancel();
+    super.deactivate();
   }
 
   @override

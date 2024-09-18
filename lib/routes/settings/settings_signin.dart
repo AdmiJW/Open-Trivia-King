@@ -9,7 +9,7 @@ import 'package:open_trivia_king/widgets/rounded_elevated_button.dart';
 //? The section shown when the user haven't signed in
 
 class SettingsSignIn extends StatelessWidget {
-  const SettingsSignIn({Key? key}) : super(key: key);
+  const SettingsSignIn({super.key});
 
   //* Sign in with Google button
   Widget _getSignInWithGoogleButton(
@@ -18,17 +18,6 @@ class SettingsSignIn extends StatelessWidget {
         delay: 0,
         duration: 750,
         child: RoundedElevatedButton(
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              const Text("Sign in with  "),
-              Image.asset(
-                'assets/images/google.png',
-                height: 24,
-                width: 24,
-              ),
-            ],
-          ),
           onPressed: () async {
             if (await authState.signInWithGoogle() != null) {
               Fluttertoast.showToast(
@@ -44,6 +33,17 @@ class SettingsSignIn extends StatelessWidget {
           fontSize: 20,
           backgroundColor: Colors.blue,
           yMargin: 2,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const Text("Sign in with  "),
+              Image.asset(
+                'assets/images/google.png',
+                height: 24,
+                width: 24,
+              ),
+            ],
+          ),
         ),
       );
 

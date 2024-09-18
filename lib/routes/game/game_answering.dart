@@ -9,12 +9,13 @@ import 'package:open_trivia_king/widgets/fade_in_with_delay.dart';
 import 'package:open_trivia_king/widgets/rounded_elevated_button.dart';
 
 class GameQuestion extends StatelessWidget {
-  const GameQuestion({Key? key}) : super(key: key);
+  const GameQuestion({super.key});
 
   @override
   Widget build(BuildContext context) {
     GameState gameState = Provider.of<GameState>(context);
-    AudioController audioController = Provider.of<AudioController>(context);
+    AudioController audioController =
+        Provider.of<AudioController>(context, listen: false);
 
     // If it is answer reveal state, then automatically proceed after 5 seconds.
     if (gameState.state == GameStates.answerReveal) {

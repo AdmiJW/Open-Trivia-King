@@ -4,7 +4,7 @@ import 'package:open_trivia_king/routes/settings/settings_body.dart';
 import 'package:open_trivia_king/widgets/scaffold_with_asset_background.dart';
 
 class SettingsScreen extends StatelessWidget {
-  const SettingsScreen({Key? key}) : super(key: key);
+  const SettingsScreen({super.key});
 
   static final _appBar = AppBar(
     title: const Text("Open Trivia King"),

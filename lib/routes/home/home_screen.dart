@@ -10,7 +10,7 @@ import 'package:open_trivia_king/routes/home/home_body.dart';
 /// 	|- Home Body
 /// 		|- CategoryList
 class HomeScreen extends StatelessWidget {
-  const HomeScreen({Key? key}) : super(key: key);
+  const HomeScreen({super.key});
 
   static final _appBar = AppBar(
     title: const Text("Open Trivia King"),

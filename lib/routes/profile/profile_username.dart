@@ -4,10 +4,10 @@ import 'package:provider/provider.dart';
 import 'package:open_trivia_king/states/user_state.dart';
 
 class ProfileUsername extends StatefulWidget {
-  const ProfileUsername({Key? key}) : super(key: key);
+  const ProfileUsername({super.key});
 
   @override
-  _ProfileUsernameState createState() => _ProfileUsernameState();
+  State<ProfileUsername> createState() => _ProfileUsernameState();
 }
 
 class _ProfileUsernameState extends State<ProfileUsername> {

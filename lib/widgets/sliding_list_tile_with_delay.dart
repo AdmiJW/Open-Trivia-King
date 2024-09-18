@@ -9,14 +9,14 @@ class SlidingListTileWithDelay extends StatelessWidget {
   final Offset initialOffset;
 
   const SlidingListTileWithDelay({
-    Key? key,
+    super.key,
     required this.title,
     required this.trailing,
     required this.delay,
     this.verticalPadding = 15,
     this.duration = 750,
     this.initialOffset = const Offset(-2, 0),
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

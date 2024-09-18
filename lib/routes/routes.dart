@@ -8,6 +8,8 @@ import 'package:open_trivia_king/routes/settings/settings_screen.dart';
 final Map<String, WidgetBuilder> routes = {
   '/': (BuildContext ctx) => const HomeScreen(),
   '/profile': (BuildContext ctx) => const ProfileScreen(),
-  '/game': (BuildContext ctx) => const GameScreen(),
+  '/game-normal': (BuildContext ctx) => const GameScreen(gameMode: 'Normal'),
+  '/game-unlimited': (BuildContext ctx) =>
+      const GameScreen(gameMode: 'Unlimited'),
   '/settings': (BuildContext ctx) => const SettingsScreen(),
 };

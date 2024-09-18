@@ -5,7 +5,7 @@ import 'package:open_trivia_king/widgets/drawer_listtile.dart';
 
 /// Navigation Drawer for the Home Screen
 class AppDrawer extends StatelessWidget {
-  const AppDrawer({Key? key}) : super(key: key);
+  const AppDrawer({super.key});
 
   // Drawer Header
   static const _headerTitleTextStyle =
@@ -20,10 +20,10 @@ class AppDrawer extends StatelessWidget {
         Colors.blue.shade600,
       ],
     )),
-    child: Column(
+    child: const Column(
       mainAxisAlignment: MainAxisAlignment.end,
       crossAxisAlignment: CrossAxisAlignment.end,
-      children: const [
+      children: [
         Text('MENU', style: _headerTitleTextStyle),
       ],
     ),
