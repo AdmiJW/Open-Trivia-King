@@ -1,8 +1,9 @@
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:http/http.dart';
 import 'dart:convert';
 import 'package:html_unescape/html_unescape_small.dart';
 
-const Map<String, int> _mapCategoryToID = {
+const Map<String, int> _categoryToID = {
   'General Knowledge': 9,
   'Entertainment: Books': 10,
   'Entertainment: Film': 11,
@@ -29,12 +30,11 @@ const Map<String, int> _mapCategoryToID = {
   'Entertainment: Cartoon & Animations': 32,
 };
 
-// A class containing all the required information for a single trivia retrieved from Open Trivia DB
 class Trivia {
-  String category;
-  String question;
-  String answer;
-  List<dynamic> choices;
+  final String category;
+  final String question;
+  final String answer;
+  final List<dynamic> choices;
 
   Trivia(Map<String, dynamic> fetchedTrivia)
       : category = fetchedTrivia['results'][0]['category'].toString(),
@@ -46,37 +46,30 @@ class Trivia {
         ] {
     choices.shuffle();
   }
+}
 
+class TriviaNotifier extends AsyncNotifier<Trivia?> {
   @override
-  String toString() {
-    return "Category: $category\n"
-        "Question: $question\n"
-        "Answer: $answer\n"
-        "Choices: $choices\n";
-  }
-}
+  Future<Trivia?> build() async => null;
 
-Future<Trivia> fetchNewQuestion(String category) async {
-  if (!_mapCategoryToID.containsKey(category)) {
-    throw ArgumentError("Invalid category $category.");
-  }
+  Future<void> fetchTrivia(String category) async {
+    if (!_categoryToID.containsKey(category)) throw ArgumentError("Invalid category $category.");
+    state = const AsyncValue.loading();
 
-  Response res;
-
-  try {
-    int? categoryID = _mapCategoryToID[category];
+    Response res;
+    int? categoryID = _categoryToID[category];
     String url = 'https://opentdb.com/api.php?amount=1&category=$categoryID';
-    res = await get(Uri.parse(url));
-  } catch (e) {
-    throw Exception(
-        "There is a problem with your internet connection!\n\n Details:\n $e");
-  }
 
-  if (res.statusCode != 200) {
-    throw Exception(
-        "Failed to fetch new trivia.\n Error code: ${res.statusCode}.");
-  }
+    try {
+      res = await get(Uri.parse(url));
+    } catch (e) {
+      throw Exception("There is a problem with your internet connection!\n\n Details:\n $e");
+    }
 
-  return Trivia(
-      jsonDecode(HtmlUnescape().convert(res.body.replaceAll('&quot;', '\\"'))));
+    if (res.statusCode != 200) throw Exception("Failed to fetch new trivia.\n Error code: ${res.statusCode}.");
+
+    state = AsyncValue.data(Trivia(jsonDecode(HtmlUnescape().convert(res.body.replaceAll('&quot;', '\\"')))));
+  }
 }
+
+final triviaProvider = AsyncNotifierProvider<TriviaNotifier, Trivia?>(TriviaNotifier.new);

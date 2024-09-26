@@ -1,22 +1,28 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-
-import 'package:open_trivia_king/states/game_state.dart';
+import 'dart:async';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:open_trivia_king/states/game.dart';
+import 'package:open_trivia_king/states/trivia.dart';
 import 'package:open_trivia_king/widgets/expand_with_delay.dart';
 import 'package:open_trivia_king/widgets/fade_in_with_delay.dart';
 
-class GameSplashScreen extends StatelessWidget {
+class GameSplashScreen extends HookConsumerWidget {
   const GameSplashScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    GameState gameState = Provider.of<GameState>(context, listen: false);
+  Widget build(BuildContext context, WidgetRef ref) {
+    final game = ref.watch(gameStateProvider);
+    final trivia = ref.watch(triviaProvider);
+    final gameNotifier = ref.watch(gameStateProvider.notifier);
 
     // After splash screen of 4 seconds, proceed to next state - Answering
-    Future.delayed(
-      const Duration(seconds: 4),
-      () => gameState.progressState(),
-    );
+    useEffect(() {
+      final timer = Timer(const Duration(seconds: 4), () {
+        gameNotifier.progress();
+      });
+      return () => timer.cancel();
+    }, [gameNotifier]);
 
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
@@ -26,7 +32,7 @@ class GameSplashScreen extends StatelessWidget {
           delay: 0,
           duration: 750,
           child: Text(
-            "Question ${gameState.questionNo}",
+            "Question ${game.questionNo}",
             textAlign: TextAlign.center,
             style: const TextStyle(fontSize: 45, fontWeight: FontWeight.bold),
           ),
@@ -46,7 +52,7 @@ class GameSplashScreen extends StatelessWidget {
           delay: 1000,
           duration: 750,
           child: Text(
-            gameState.currTrivia?.category ?? "Unknown Category",
+            trivia.value?.category ?? "Unknown Category",
             textAlign: TextAlign.center,
             style: const TextStyle(fontSize: 30, fontWeight: FontWeight.w300),
           ),

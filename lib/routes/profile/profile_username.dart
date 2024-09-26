@@ -1,52 +1,45 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:open_trivia_king/states/profile.dart';
 
-import 'package:open_trivia_king/states/user_state.dart';
-
-class ProfileUsername extends StatefulWidget {
+class ProfileUsername extends ConsumerStatefulWidget {
   const ProfileUsername({super.key});
 
   @override
-  State<ProfileUsername> createState() => _ProfileUsernameState();
+  ConsumerState<ProfileUsername> createState() => _ProfileUsernameState();
 }
 
-class _ProfileUsernameState extends State<ProfileUsername> {
+class _ProfileUsernameState extends ConsumerState<ProfileUsername> {
   bool isEditing = false;
   TextEditingController controller = TextEditingController();
   FocusNode focusNode = FocusNode();
-
-  //? Reassignable function, needs to use the UserState object
-  // ignore: prefer_function_declarations_over_variables
-  void Function() submitUsername = () {};
 
   @override
   void initState() {
     super.initState();
 
-    //? When the text field is unfocused, exit editing mode and apply changes
+    // When the text field is unfocused, exit editing mode and apply changes
     focusNode.addListener(() {
-      if (!focusNode.hasFocus) {
-        submitUsername();
-      }
+      if (!focusNode.hasFocus) onSubmit();
     });
+  }
+
+  Future<void> onSubmit() async {
+    if (controller.text.isNotEmpty) {
+      await ref.read(profileStateProvider.notifier).setUsername(controller.text);
+    }
+    setState(() => isEditing = false);
   }
 
   @override
   Widget build(BuildContext context) {
-    UserState userState = Provider.of<UserState>(context, listen: true);
-    controller.text = userState.username;
-
-    // Refresh the submitUsername() method
-    submitUsername = () {
-      if (controller.text.isNotEmpty) {
-        userState.setUsername(controller.text);
-      }
-      setState(() => isEditing = false);
-    };
+    final profile = ref.watch(profileStateProvider);
+    controller.text = profile.username;
 
     return Center(
-      child: isEditing ? editRow(userState) : displayRow(userState),
-    );
+        child: isEditing
+            ? UsernameEdit(controller: controller, focusNode: focusNode, onSubmit: onSubmit)
+            : UsernameDisplay(onEdit: () => setState(() => isEditing = true)));
   }
 
   @override
@@ -55,9 +48,17 @@ class _ProfileUsernameState extends State<ProfileUsername> {
     focusNode.dispose();
     super.dispose();
   }
+}
 
-  //* The username row when isEditing is false
-  Widget displayRow(UserState userState) {
+class UsernameDisplay extends ConsumerWidget {
+  final void Function() onEdit;
+
+  const UsernameDisplay({super.key, required this.onEdit});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final profile = ref.watch(profileStateProvider);
+
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
@@ -66,32 +67,37 @@ class _ProfileUsernameState extends State<ProfileUsername> {
         ),
         Flexible(
           child: Text(
-            userState.username,
+            profile.username,
             style: const TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
             textAlign: TextAlign.center,
           ),
         ),
         IconButton(
-          onPressed: () => setState(() => isEditing = true),
+          onPressed: onEdit,
           icon: const Icon(Icons.edit),
           iconSize: 18,
         ),
       ],
     );
   }
+}
 
-  //* The username row when isEditing is true
-  Widget editRow(UserState userState) {
-    // Request focus onto the text field. Without this, the text field won't focus on tapping edit icon
-    focusNode.requestFocus();
+class UsernameEdit extends ConsumerWidget {
+  final TextEditingController controller;
+  final FocusNode focusNode;
+  final void Function() onSubmit;
 
+  const UsernameEdit({super.key, required this.controller, required this.focusNode, required this.onSubmit});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
     return Row(
       children: [
         Flexible(
           child: TextField(
             controller: controller,
             focusNode: focusNode,
-            onSubmitted: (_) => submitUsername(),
+            onSubmitted: (_) => onSubmit(),
           ),
         ),
       ],

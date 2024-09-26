@@ -1,9 +1,8 @@
-import 'package:flutter/material.dart';
 import 'dart:async';
+import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:flutter/material.dart';
 
-//? A wrapper class for AnimatedOpacity to have fade-in effect that automatically triggers after `delay` seconds
-
-class FadeInWithDelay extends StatefulWidget {
+class FadeInWithDelay extends HookWidget {
   final Widget child;
   final int delay;
   final int duration;
@@ -18,36 +17,22 @@ class FadeInWithDelay extends StatefulWidget {
   });
 
   @override
-  State<FadeInWithDelay> createState() => _FadeInWithDelayState();
-}
-
-class _FadeInWithDelayState extends State<FadeInWithDelay> {
-  double _opacity = 0;
-  Timer? _timer;
-
-  @override
-  void initState() {
-    super.initState();
-
-    _opacity = 0;
-    _timer = Timer(Duration(milliseconds: widget.delay), () {
-      setState(() => _opacity = 1);
-    });
-  }
-
-  @override
-  void deactivate() {
-    _timer?.cancel();
-    super.deactivate();
-  }
-
-  @override
   Widget build(BuildContext context) {
+    final opacity = useState(0.0);
+    final timer = useState<Timer?>(null);
+
+    useEffect(() {
+      timer.value = Timer(Duration(milliseconds: delay), () {
+        opacity.value = 1;
+      });
+      return () => timer.value?.cancel();
+    }, []);
+
     return AnimatedOpacity(
-      duration: Duration(milliseconds: widget.duration),
-      curve: widget.curve,
-      opacity: _opacity,
-      child: widget.child,
+      duration: Duration(milliseconds: duration),
+      curve: curve,
+      opacity: opacity.value,
+      child: child,
     );
   }
 }

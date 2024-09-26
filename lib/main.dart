@@ -1,20 +1,10 @@
-//! General Packages
 import 'package:flutter/material.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-import 'package:provider/provider.dart';
 import 'package:firebase_core/firebase_core.dart';
+
 import 'package:open_trivia_king/firebase_options.dart';
-
-//! Other packages
-import 'package:open_trivia_king/themes/theme.dart';
-
-//! Top Level States
-import 'package:open_trivia_king/states/category_state.dart';
-import 'package:open_trivia_king/states/user_state.dart';
-import 'package:open_trivia_king/states/audio_controller.dart';
-import 'package:open_trivia_king/states/auth_state.dart';
-
-//! Routes
+import 'package:open_trivia_king/data/theme.dart';
 import 'package:open_trivia_king/routes/routes.dart';
 
 void main() async {
@@ -25,41 +15,46 @@ void main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
 
-  runApp(const OpenTriviaKing());
+  runApp(
+    const ProviderScope(
+      child: UnfocusTextFieldOnTapOutside(
+        child: OpenTriviaKing(),
+      ),
+    ),
+  );
 }
 
-//?===============================================================================
-//? Top level widget - MaterialApp wrapped in top level state Provider wrapped
-//?===============================================================================
+class UnfocusTextFieldOnTapOutside extends StatelessWidget {
+  final Widget? child;
+
+  const UnfocusTextFieldOnTapOutside({super.key, this.child});
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      child: child,
+      onTap: () {
+        FocusScopeNode currentFocus = FocusScope.of(context);
+        bool hasPrimaryFocus = currentFocus.hasPrimaryFocus;
+        bool hasFocusedChild = currentFocus.focusedChild != null;
+
+        if (!hasPrimaryFocus && hasFocusedChild) {
+          FocusManager.instance.primaryFocus?.unfocus();
+        }
+      },
+    );
+  }
+}
+
 class OpenTriviaKing extends StatelessWidget {
   const OpenTriviaKing({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return MultiProvider(
-      providers: [
-        ChangeNotifierProvider.value(value: CategoryState()),
-        ChangeNotifierProvider.value(value: UserState()),
-        ChangeNotifierProvider.value(value: AudioController()),
-        ChangeNotifierProvider.value(value: AuthState()),
-      ],
-
-      //? The GestureDetector is to dismiss keyboard whenever user taps anywhere outside of text field.
-      child: GestureDetector(
-          child: MaterialApp(
-            title: 'Open Trivia King',
-            theme: MyTheme.lightTheme,
-            routes: routes,
-          ),
-          //? Attempts to unfocus the text field when tapped on area outside of text field
-          onTap: () {
-            FocusScopeNode currentFocus = FocusScope.of(context);
-
-            if (!currentFocus.hasPrimaryFocus &&
-                currentFocus.focusedChild != null) {
-              FocusManager.instance.primaryFocus?.unfocus();
-            }
-          }),
+    return MaterialApp(
+      title: 'Open Trivia King',
+      theme: AppTheme.lightTheme,
+      routes: routes,
     );
   }
 }

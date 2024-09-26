@@ -1,9 +1,8 @@
-import 'package:flutter/material.dart';
 import 'dart:async';
+import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 
-//? A wrapper class for AnimatedSlide to have slide-in effect that automatically triggers after `delay` seconds
-
-class SlideInWithDelay extends StatefulWidget {
+class SlideInWithDelay extends HookWidget {
   final Widget child;
   final int delay;
   final int duration;
@@ -20,29 +19,22 @@ class SlideInWithDelay extends StatefulWidget {
   });
 
   @override
-  State<SlideInWithDelay> createState() => _SlideInWithDelayState();
-}
-
-class _SlideInWithDelayState extends State<SlideInWithDelay> {
-  Offset _offset = Offset.zero;
-
-  @override
-  void initState() {
-    super.initState();
-    _offset = widget.initialOffset;
-
-    Future.delayed(Duration(milliseconds: widget.delay), () {
-      setState(() => _offset = Offset.zero);
-    });
-  }
-
-  @override
   Widget build(BuildContext context) {
+    final offset = useState(initialOffset);
+    final timer = useState<Timer?>(null);
+
+    useEffect(() {
+      timer.value = Timer(Duration(milliseconds: delay), () {
+        offset.value = Offset.zero;
+      });
+      return () => timer.value?.cancel();
+    }, []);
+
     return AnimatedSlide(
-      duration: Duration(milliseconds: widget.duration),
-      curve: widget.curve,
-      offset: _offset,
-      child: widget.child,
+      duration: Duration(milliseconds: duration),
+      curve: curve,
+      offset: offset.value,
+      child: child,
     );
   }
 }

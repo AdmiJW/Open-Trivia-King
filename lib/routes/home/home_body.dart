@@ -1,28 +1,25 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-
-import 'package:open_trivia_king/states/category_state.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:open_trivia_king/widgets/rounded_elevated_button.dart';
 import 'package:open_trivia_king/routes/home/home_categorylist.dart';
+import 'package:open_trivia_king/states/category.dart';
 
-/// The main body of the Home Screen
-/// Consist of title, buttons, and CategoryList
-class AppBody extends StatelessWidget {
+class AppBody extends ConsumerWidget {
   const AppBody({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        _title,
-        const _ClearSelectAllButtonGroup(),
+        const Title(),
+        const QuickControls(),
         const Expanded(child: CategoryList()),
         const SizedBox(
           height: 4,
         ),
-        _getStartQuizButton(context),
-        _getUnlimitedQuizButton(context),
+        StartQuizButton(routeCallback: (route) => routeCallback(context, ref, route)),
+        UnlimitedQuizButton(routeCallback: (route) => routeCallback(context, ref, route)),
         const SizedBox(
           height: 4,
         ),
@@ -30,20 +27,73 @@ class AppBody extends StatelessWidget {
     );
   }
 
-  // Title
-  static const _titleStyle =
-      TextStyle(fontWeight: FontWeight.bold, fontSize: 35);
+  void routeCallback(BuildContext ctx, WidgetRef ref, String route) {
+    final category = ref.read(categoryStateProvider);
 
-  final _title = const Text(
-    'Select Categories',
-    textAlign: TextAlign.center,
-    style: _titleStyle,
-  );
+    if (!category.isAnySelected) {
+      ScaffoldMessenger.of(ctx).showSnackBar(
+        const SnackBar(content: Text("Please select at least one category!")),
+      );
+      return;
+    }
 
-  // Buttons
-  RoundedElevatedButton _getStartQuizButton(BuildContext context) {
-    var categoryProvider = Provider.of<CategoryState>(context, listen: false);
+    Navigator.of(ctx).pushNamed(route);
+  }
+}
 
+class Title extends StatelessWidget {
+  const Title({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return const Text(
+      'Select Categories',
+      textAlign: TextAlign.center,
+      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 35),
+    );
+  }
+}
+
+/// A row representing a button group consisting of "Select All" and "Clear All" button
+class QuickControls extends ConsumerWidget {
+  const QuickControls({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final categoryNotifier = ref.watch(categoryStateProvider.notifier);
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 10),
+      child: Row(children: [
+        Expanded(
+          child: RoundedElevatedButton(
+            text: 'Clear All',
+            onPressed: () => categoryNotifier.setAllTo(false),
+            fontSize: 15,
+          ),
+        ),
+        const SizedBox(
+          width: 10,
+        ),
+        Expanded(
+          child: RoundedElevatedButton(
+            text: 'Select All',
+            onPressed: () => categoryNotifier.setAllTo(true),
+            fontSize: 15,
+          ),
+        ),
+      ]),
+    );
+  }
+}
+
+class StartQuizButton extends StatelessWidget {
+  final void Function(String) routeCallback;
+
+  const StartQuizButton({super.key, required this.routeCallback});
+
+  @override
+  Widget build(BuildContext context) {
     return RoundedElevatedButton(
       text: "Start Quiz",
       xMargin: 50,
@@ -53,13 +103,18 @@ class AppBody extends StatelessWidget {
       backgroundColor: Colors.green.shade600,
       fontSize: 25,
       borderRadius: 30,
-      onPressed: () => goToGameRoute(context, categoryProvider, 'Normal'),
+      onPressed: () => routeCallback('/game-normal'),
     );
   }
+}
 
-  RoundedElevatedButton _getUnlimitedQuizButton(BuildContext context) {
-    var categoryProvider = Provider.of<CategoryState>(context, listen: false);
+class UnlimitedQuizButton extends StatelessWidget {
+  final void Function(String) routeCallback;
 
+  const UnlimitedQuizButton({super.key, required this.routeCallback});
+
+  @override
+  Widget build(BuildContext context) {
     return RoundedElevatedButton(
       text: "Unlimited Mode",
       xMargin: 50,
@@ -69,54 +124,7 @@ class AppBody extends StatelessWidget {
       backgroundColor: Colors.amber.shade900,
       fontSize: 25,
       borderRadius: 30,
-      onPressed: () => goToGameRoute(context, categoryProvider, 'Unlimited'),
-    );
-  }
-
-  void goToGameRoute(
-      BuildContext ctx, CategoryState categoryProvider, String mode) {
-    if (!categoryProvider.isAnyCategorySelected()) {
-      ScaffoldMessenger.of(ctx).showSnackBar(
-        const SnackBar(content: Text("Please select at least one category!")),
-      );
-    } else {
-      var url = mode == 'Normal' ? '/game-normal' : '/game-unlimited';
-      Navigator.of(ctx).pushNamed(url);
-    }
-  }
-}
-
-/// A row representing a button group consisting of "Select All" and "Clear All" button
-class _ClearSelectAllButtonGroup extends StatelessWidget {
-  const _ClearSelectAllButtonGroup();
-
-  @override
-  Widget build(BuildContext context) {
-    var categoryProvider = Provider.of<CategoryState>(context, listen: false);
-
-    List<Widget> children = [
-      Expanded(
-        child: RoundedElevatedButton(
-          text: 'Clear All',
-          onPressed: () => categoryProvider.setAllCategoryTo(false),
-          fontSize: 15,
-        ),
-      ),
-      const SizedBox(
-        width: 10,
-      ),
-      Expanded(
-        child: RoundedElevatedButton(
-          text: 'Select All',
-          onPressed: () => categoryProvider.setAllCategoryTo(true),
-          fontSize: 15,
-        ),
-      ),
-    ];
-
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 10),
-      child: Row(children: children),
+      onPressed: () => routeCallback('/game-unlimited'),
     );
   }
 }

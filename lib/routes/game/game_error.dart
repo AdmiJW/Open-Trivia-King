@@ -1,15 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-
-import 'package:open_trivia_king/states/game_state.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:open_trivia_king/states/game.dart';
 
 // Error screen.
-class GameError extends StatelessWidget {
+class GameError extends ConsumerWidget {
   const GameError({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    GameState gameState = Provider.of<GameState>(context, listen: false);
+  Widget build(BuildContext context, WidgetRef ref) {
+    final game = ref.watch(gameStateProvider);
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 10),
@@ -23,7 +22,7 @@ class GameError extends StatelessWidget {
             width: double.infinity,
           ),
           Text(
-            gameState.errorMessage ?? "Unkwown error",
+            game.errorMessage ?? "Unkwown error",
             textAlign: TextAlign.center,
             style: const TextStyle(fontWeight: FontWeight.w300, fontSize: 20),
           )

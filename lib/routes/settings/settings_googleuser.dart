@@ -1,40 +1,61 @@
 import 'package:flutter/material.dart';
-import 'package:open_trivia_king/states/auth_state.dart';
-import 'package:provider/provider.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-
-import 'package:open_trivia_king/states/user_state.dart';
+import 'package:open_trivia_king/states/auth.dart';
+import 'package:open_trivia_king/states/firebase.dart';
 import 'package:open_trivia_king/widgets/fade_in_with_delay.dart';
 import 'package:open_trivia_king/widgets/rounded_elevated_button.dart';
-import 'package:open_trivia_king/services/firebase_operations.dart';
-
-//? The section shown when the user is logged in
 
 class SettingsGoogleUser extends StatelessWidget {
   const SettingsGoogleUser({super.key});
 
-  //* Simple Profile section
-  Widget _getProfile(AuthState authState) => Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          CircleAvatar(
-            radius: 40,
-            foregroundImage: authState.profilePicUrl != null
-                ? Image.network(authState.profilePicUrl!).image
-                : null,
-            child: Text(authState.displayName?[0] ?? "User"),
-          ),
-          const SizedBox(
-            width: 20,
-          ),
-          Text(authState.displayName ?? "Anonymous",
-              style: const TextStyle(fontSize: 25, fontWeight: FontWeight.bold))
-        ],
-      );
+  @override
+  Widget build(BuildContext context) {
+    return const Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Profile(),
+        SizedBox(height: 30),
+        SyncToCloudButton(),
+        SyncFromCloudButton(),
+        SignOutButton(),
+      ],
+    );
+  }
+}
 
-  //* Sync to cloud button
-  Widget _getSyncToCloudButton(AuthState authState, UserState userState) =>
-      FadeInWithDelay(
+class Profile extends ConsumerWidget {
+  const Profile({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final auth = ref.watch(authStateProvider);
+
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        CircleAvatar(
+          radius: 40,
+          foregroundImage: auth.profilePicUrl != null ? Image.network(auth.profilePicUrl!).image : null,
+          child: Text(auth.displayName?[0] ?? "User"),
+        ),
+        const SizedBox(
+          width: 20,
+        ),
+        Text(auth.displayName ?? "Anonymous", style: const TextStyle(fontSize: 25, fontWeight: FontWeight.bold))
+      ],
+    );
+  }
+}
+
+class SyncToCloudButton extends ConsumerWidget {
+  const SyncToCloudButton({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final firebase = ref.watch(firebaseProvider.notifier);
+
+    return FadeInWithDelay(
         delay: 0,
         duration: 750,
         child: RoundedElevatedButton(
@@ -42,8 +63,8 @@ class SettingsGoogleUser extends StatelessWidget {
             Fluttertoast.showToast(
               msg: "Saving... Please wait",
             );
-            await saveProfilePicToStorage(authState, userState);
-            await saveUserStateToFirestore(authState, userState);
+            await firebase.saveProfilePicToStorage();
+            await firebase.saveToFirestore();
           },
           fontSize: 20,
           backgroundColor: Colors.blue,
@@ -55,38 +76,28 @@ class SettingsGoogleUser extends StatelessWidget {
               Icon(Icons.upload),
             ],
           ),
-        ),
-      );
+        ));
+  }
+}
 
-  //* Sync with cloud button
-  Widget _getSyncFromCloudButton(
-          BuildContext ctx, AuthState authState, UserState userState) =>
-      FadeInWithDelay(
+class SyncFromCloudButton extends ConsumerWidget {
+  const SyncFromCloudButton({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final firebase = ref.watch(firebaseProvider.notifier);
+
+    return FadeInWithDelay(
         delay: 250,
         duration: 750,
         child: RoundedElevatedButton(
           onPressed: () async {
-            bool? confirmDelete = await showDialog<bool>(
-                context: ctx,
-                builder: (context) => AlertDialog(
-                      title: const Text("Sync with cloud?"),
-                      content: const Text(
-                          "Your local game data will be overwritten"),
-                      actions: [
-                        TextButton(
-                          onPressed: () => Navigator.pop(context, false),
-                          child: const Text('Cancel'),
-                        ),
-                        TextButton(
-                          onPressed: () => Navigator.pop(context, true),
-                          child: const Text('OK'),
-                        ),
-                      ],
-                    ));
+            bool? confirmDelete = await showConfirmDialog(context);
 
             if (confirmDelete == null || !confirmDelete) return;
-            await loadUserStateFromFirestore(authState, userState);
-            await loadProfilePicFromStorage(authState, userState);
+
+            await firebase.loadFromFirestore();
+            await firebase.loadProfilePicFromStorage();
           },
           fontSize: 20,
           backgroundColor: Colors.blue,
@@ -98,16 +109,42 @@ class SettingsGoogleUser extends StatelessWidget {
               Icon(Icons.download),
             ],
           ),
-        ),
-      );
+        ));
+  }
 
-  //* Sign out button
-  Widget _getSignOutButton(AuthState authState) => FadeInWithDelay(
+  Future<bool?> showConfirmDialog(BuildContext ctx) async {
+    return await showDialog<bool>(
+        context: ctx,
+        builder: (context) => AlertDialog(
+              title: const Text("Sync with cloud?"),
+              content: const Text("Your local game data will be overwritten"),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.pop(context, false),
+                  child: const Text('Cancel'),
+                ),
+                TextButton(
+                  onPressed: () => Navigator.pop(context, true),
+                  child: const Text('OK'),
+                ),
+              ],
+            ));
+  }
+}
+
+class SignOutButton extends ConsumerWidget {
+  const SignOutButton({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final authNotifier = ref.watch(authStateProvider.notifier);
+
+    return FadeInWithDelay(
         delay: 500,
         duration: 750,
         child: RoundedElevatedButton(
           onPressed: () async {
-            await authState.signOut();
+            await authNotifier.signOut();
             Fluttertoast.showToast(
               msg: "Signed out successfully.",
             );
@@ -122,23 +159,6 @@ class SettingsGoogleUser extends StatelessWidget {
               Icon(Icons.logout),
             ],
           ),
-        ),
-      );
-
-  @override
-  Widget build(BuildContext context) {
-    AuthState authState = Provider.of<AuthState>(context);
-    UserState userState = Provider.of<UserState>(context);
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        _getProfile(authState),
-        const SizedBox(height: 30),
-        _getSyncToCloudButton(authState, userState),
-        _getSyncFromCloudButton(context, authState, userState),
-        _getSignOutButton(authState),
-      ],
-    );
+        ));
   }
 }

@@ -1,70 +1,87 @@
 import 'package:flutter/material.dart';
-import 'package:open_trivia_king/states/auth_state.dart';
-import 'package:provider/provider.dart';
-
-import 'package:open_trivia_king/states/user_state.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:open_trivia_king/states/auth.dart';
+import 'package:open_trivia_king/states/profile.dart';
+import 'package:open_trivia_king/states/stats.dart';
 import 'package:open_trivia_king/widgets/fade_in_with_delay.dart';
 import 'package:open_trivia_king/widgets/rounded_elevated_button.dart';
 import 'package:open_trivia_king/routes/settings/settings_signin.dart';
 import 'package:open_trivia_king/routes/settings/settings_googleuser.dart';
 
-class SettingsBody extends StatelessWidget {
+class SettingsBody extends ConsumerWidget {
   const SettingsBody({super.key});
 
-  //* Title
-  static const Widget _title = FadeInWithDelay(
-    delay: 0,
-    duration: 500,
-    child: Text("Settings",
-        textAlign: TextAlign.center,
-        style: TextStyle(
-          fontWeight: FontWeight.bold,
-          fontSize: 40,
-        )),
-  );
-
-  //* Clear Local user data button
-  Widget _getClearLocalUserDataButton(context, userState) =>
-      RoundedElevatedButton(
-        onPressed: () => clearUserStateProcedure(context, userState),
-        fontSize: 20,
-        backgroundColor: Colors.red,
-        child: const Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text("Clear local user data  "),
-            Icon(Icons.delete_forever),
-          ],
-        ),
-      );
-
   @override
-  Widget build(BuildContext context) {
-    UserState userState = Provider.of<UserState>(context);
-    AuthState authState = Provider.of<AuthState>(context);
+  Widget build(BuildContext context, WidgetRef ref) {
+    final auth = ref.watch(authStateProvider);
 
     return ListView(
       padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
       children: [
-        _title,
+        const Title(),
         const SizedBox(
           height: 20,
         ),
-        authState.authState == AuthStateEnum.loggedOut
-            ? const SettingsSignIn()
-            : const SettingsGoogleUser(),
+        auth.status == AuthStatus.loggedOut ? const SettingsSignIn() : const SettingsGoogleUser(),
         const Divider(height: 20),
-        _getClearLocalUserDataButton(context, userState),
+        const ClearLocalUserDataButton(),
       ],
     );
   }
+}
 
-  //? ==============================================
-  //? Settings Procedures
-  //? =============================================
+class Title extends StatelessWidget {
+  const Title({super.key});
 
-  void clearUserStateProcedure(BuildContext ctx, UserState userState) async {
-    bool? confirmDelete = await showDialog<bool>(
+  @override
+  Widget build(BuildContext context) {
+    return const FadeInWithDelay(
+      delay: 0,
+      duration: 500,
+      child: Text("Settings",
+          textAlign: TextAlign.center,
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            fontSize: 40,
+          )),
+    );
+  }
+}
+
+class ClearLocalUserDataButton extends ConsumerWidget {
+  const ClearLocalUserDataButton({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return RoundedElevatedButton(
+      onPressed: () => clearUserStateProcedure(context, ref),
+      fontSize: 20,
+      backgroundColor: Colors.red,
+      child: const Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text("Clear local user data  "),
+          Icon(Icons.delete_forever),
+        ],
+      ),
+    );
+  }
+
+  Future<void> clearUserStateProcedure(BuildContext ctx, WidgetRef ref) async {
+    bool? confirm = await showConfirmDialog(ctx);
+
+    if (confirm == null || !confirm) return;
+
+    final profileNotifier = ref.read(profileStateProvider.notifier);
+    final statsNotifier = ref.read(statsStateProvider.notifier);
+    await profileNotifier.reset();
+    await statsNotifier.reset();
+
+    if (ctx.mounted) await showSuccessDialog(ctx);
+  }
+
+  Future<bool?> showConfirmDialog(BuildContext ctx) async {
+    return await showDialog<bool>(
         context: ctx,
         builder: (context) => AlertDialog(
               title: const Text("Reset data?"),
@@ -82,10 +99,9 @@ class SettingsBody extends StatelessWidget {
                 ),
               ],
             ));
+  }
 
-    if (confirmDelete == null || !confirmDelete) return;
-    await userState.resetUserState();
-
+  Future<void> showSuccessDialog(BuildContext ctx) async {
     await showDialog<void>(
         context: ctx,
         builder: (context) => AlertDialog(

@@ -1,25 +1,25 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:open_trivia_king/states/category.dart';
 
-import 'package:open_trivia_king/states/category_state.dart';
-
-class CategoryList extends StatelessWidget {
+class CategoryList extends ConsumerWidget {
   const CategoryList({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    var provider = Provider.of<CategoryState>(context);
+  Widget build(BuildContext context, WidgetRef ref) {
+    final category = ref.watch(categoryStateProvider);
+    final categoryNotifier = ref.watch(categoryStateProvider.notifier);
 
     return ListView(
       children: [
-        for (var category in provider.categorySelection.entries)
+        for (var category in category.selections.entries)
           ListTile(
             title: Text(category.key),
             trailing: Checkbox(
               value: category.value,
-              onChanged: (_) => provider.toggleCategorySelection(category.key),
+              onChanged: (_) => categoryNotifier.toggle(category.key),
             ),
-            onTap: () => provider.toggleCategorySelection(category.key),
+            onTap: () => categoryNotifier.toggle(category.key),
           ),
       ],
     );

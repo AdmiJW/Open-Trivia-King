@@ -43,10 +43,8 @@ class RoundedElevatedButton extends StatelessWidget {
           ),
           backgroundColor: backgroundColor,
           foregroundColor: foregroundColor,
-          padding:
-              EdgeInsets.symmetric(horizontal: xPadding, vertical: yPadding),
-          shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.all(Radius.circular(borderRadius))),
+          padding: EdgeInsets.symmetric(horizontal: xPadding, vertical: yPadding),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(borderRadius))),
         ),
         child: child ??
             Text(

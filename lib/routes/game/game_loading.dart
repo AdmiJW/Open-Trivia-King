@@ -1,32 +1,27 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-
-import 'package:open_trivia_king/states/category_state.dart';
-import 'package:open_trivia_king/states/game_state.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:open_trivia_king/states/category.dart';
+import 'package:open_trivia_king/states/game.dart';
 import 'package:open_trivia_king/widgets/fade_in_with_delay.dart';
 
-class GameLoading extends StatelessWidget {
+class GameLoading extends HookConsumerWidget {
   const GameLoading({super.key});
 
-  Future<void> fetch(BuildContext ctx) async {
-    GameState gameState = Provider.of<GameState>(ctx, listen: false);
-    CategoryState categoryState =
-        Provider.of<CategoryState>(ctx, listen: false);
-
-    try {
-      await gameState
-          .fetchQuestionIntoState(categoryState.getRandomSelectedCategory());
-      gameState.progressState();
-    } catch (error) {
-      gameState.switchToErrorState(error.toString());
-    }
+  Future<void> fetch(WidgetRef ref) async {
+    final gameNotifier = ref.read(gameStateProvider.notifier);
+    final category = ref.read(categoryStateProvider);
+    await gameNotifier.fetchNewQuestion(category.randomSelectedCategory);
   }
 
   @override
-  Widget build(BuildContext context) {
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      fetch(context);
-    });
+  Widget build(BuildContext context, WidgetRef ref) {
+    useEffect(() {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        fetch(ref);
+      });
+      return;
+    }, [ref]);
 
     return const FadeInWithDelay(
       delay: 0,
@@ -35,8 +30,7 @@ class GameLoading extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          SizedBox(
-              width: double.infinity), // Use to expand column to screen width
+          SizedBox(width: double.infinity), // Use to expand column to screen width
           CircularProgressIndicator(),
           SizedBox(
             height: 20,

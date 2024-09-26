@@ -30,8 +30,7 @@ class DrawerListTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      contentPadding:
-          EdgeInsets.symmetric(horizontal: xPadding, vertical: yPadding),
+      contentPadding: EdgeInsets.symmetric(horizontal: xPadding, vertical: yPadding),
       leading: Icon(leadingIcon, color: iconColor),
       title: Text(
         title,

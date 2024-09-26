@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-class MyTheme {
+class AppTheme {
   static ThemeData get lightTheme => ThemeData(
         primaryColor: Colors.blue,
         scaffoldBackgroundColor: Colors.transparent,

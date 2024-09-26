@@ -1,9 +1,8 @@
-import 'package:flutter/material.dart';
 import 'dart:async';
+import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:flutter/material.dart';
 
-//? A wrapper class for AnimatedScale to have expanding effect which occurs after `delay` seconds.
-
-class ExpandWithDelay extends StatefulWidget {
+class ExpandWithDelay extends HookWidget {
   final Widget child;
   final int delay;
   final int duration;
@@ -20,29 +19,22 @@ class ExpandWithDelay extends StatefulWidget {
   });
 
   @override
-  State<ExpandWithDelay> createState() => _ExpandWithDelayState();
-}
-
-class _ExpandWithDelayState extends State<ExpandWithDelay> {
-  double _scale = 0;
-
-  @override
-  void initState() {
-    super.initState();
-    _scale = widget.initialScale;
-
-    Future.delayed(Duration(milliseconds: widget.delay), () {
-      setState(() => _scale = 1);
-    });
-  }
-
-  @override
   Widget build(BuildContext context) {
+    final scale = useState(initialScale);
+    final timer = useState<Timer?>(null);
+
+    useEffect(() {
+      timer.value = Timer(Duration(milliseconds: delay), () {
+        scale.value = 1;
+      });
+      return () => timer.value?.cancel();
+    }, []);
+
     return AnimatedScale(
-      duration: Duration(milliseconds: widget.duration),
-      scale: _scale,
-      curve: widget.curve,
-      child: widget.child,
+      duration: Duration(milliseconds: duration),
+      scale: scale.value,
+      curve: curve,
+      child: child,
     );
   }
 }
